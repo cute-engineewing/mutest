@@ -1,8 +1,8 @@
 #ifndef _MULIB_MUTEST_H
 #define _MULIB_MUTEST_H
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #define MUTEST_SUCCESS 0
 #define MUTEST_ERROR   1

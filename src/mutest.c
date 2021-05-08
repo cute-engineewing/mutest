@@ -4,19 +4,20 @@
 
 #include <unistd.h>
 
-int run_threaded_test(struct mutest_test test)
+int
+run_threaded_test(struct mutest_test test)
 {
-    pid_t child;
-    int status;
-    fflush(stdout); 
-    child=fork();
-    if (child==0)
-    {
-        exit(test.func());        
-    }
-    waitpid(child, &status, 0);
+	pid_t child;
+	int status;
+	fflush(stdout);
+	child = fork();
+	if (child == 0)
+	{
+		exit(test.func());
+	}
+	waitpid(child, &status, 0);
 
-    return status;
+	return status;
 }
 
 int
@@ -24,8 +25,8 @@ mutest_run_single_test(struct mutest_test test)
 {
 	int result;
 	printf("test: %-30s | ", test.name);
-    
-    result = run_threaded_test(test);
+
+	result = run_threaded_test(test);
 
 	if (result != MUTEST_SUCCESS) /* we want a success */
 	{
