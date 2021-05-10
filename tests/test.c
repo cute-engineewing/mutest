@@ -10,7 +10,7 @@ int
 test_mutest_equality_result()
 {
 	mutest_string_equal("hey", "hey");
-	mutest_excpect(0 == 0);
+	mutest_expect(0 == 0);
 	return MUTEST_SUCCESS;
 }
 

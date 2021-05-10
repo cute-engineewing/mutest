@@ -27,7 +27,7 @@ int imp_mutest_run_grouped_test(struct mutest_test *test, size_t length,
 	imp_mutest_run_grouped_test(                                               \
 		test_list, sizeof(test_list) / sizeof(struct mutest_test), #test_list)
 
-#define mutest_excpect(condition)                                              \
+#define mutest_expect(condition)                                              \
 	if (!(condition))                                                          \
 	{                                                                          \
 		printf("expected %-10s | ", #condition);                               \
