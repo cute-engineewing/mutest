@@ -49,14 +49,14 @@ int
 imp_mutest_run_grouped_test(struct mutest_test *test, size_t length,
 							const char *name)
 {
-	size_t i;
-	size_t current_test_result;
-	size_t success_count;
+	size_t i = 0;
+	size_t current_test_result = 0;
+	size_t success_count = 0;
 	int error_count = MUTEST_SUCCESS;
 
 	printf("running grouped test: %10s \n", name);
 
-	for (i = 0; i < length; i++)
+	for (; i < length; i++)
 	{
 		/* store the current test result in a temporary variable to check the individual test result instead of all results combined */
 		current_test_result = mutest_run_single_test(test[i]);
