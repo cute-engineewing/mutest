@@ -2,7 +2,7 @@ CC	?= gcc
 RM	= rm -f
 AR	= ar
 
-CFLAGS	+= -ansi -pedantic -Wall -Werror -Wextra -fpic -Iinc
+CFLAGS	+= -std=c99 -pedantic -Wall -Werror -Wextra -fpic -Iinc -O0
 LDFLAGS	+=
 
 test: CFLAGS	+=  -Iinc --coverage
@@ -15,7 +15,7 @@ SRCS	= mutest.c
 
 OBJS	= $(addprefix src/, $(SRCS:.c=.o))
 
-TEST_SRCS	= test.c
+TEST_SRCS	= test.c test_result.c test_expect.c
 TEST_OBJS	= $(addprefix tests/, $(TEST_SRCS:.c=.o))
 
 all: $(TARGET).a $(TARGET).so

@@ -4,6 +4,26 @@
 
 #include <unistd.h>
 
+struct mutest_group_test *group_array_test[MAX_GROUP];
+size_t current_group_count = 0;
+
+void
+_add_group(struct mutest_group_test *target)
+{
+	target->test_array = malloc(sizeof(struct mutest_test) * MAX_TEST_ON_GROUP);
+	group_array_test[current_group_count] = target;
+	current_group_count++;
+}
+
+void
+_add_test(struct mutest_group_test *group, struct mutest_test test)
+{
+	group->test_array[group->count] = test;
+	group->count++;
+	printf(" added test: %s on group %s\n", test.name, group->name);
+}
+
+/* launch a thread a get its result */
 int
 run_threaded_test(struct mutest_test test)
 {
@@ -46,28 +66,59 @@ mutest_run_single_test(struct mutest_test test)
 }
 
 int
-imp_mutest_run_grouped_test(struct mutest_test *test, size_t length,
-							const char *name)
+mutest_run_group(struct mutest_group_test *group)
 {
-	size_t i = 0;
+	int errors = MUTEST_SUCCESS;
 	size_t current_test_result = 0;
 	size_t success_count = 0;
-	int error_count = MUTEST_SUCCESS;
+	size_t i = 0;
+	printf("=====================\n");
+	printf("running grouped test: %10s \n", group->name);
 
-	printf("running grouped test: %10s \n", name);
-
-	for (; i < length; i++)
+	for (; i < group->count; i++)
 	{
-		/* store the current test result in a temporary variable to check the individual test result instead of all results combined */
-		current_test_result = mutest_run_single_test(test[i]);
-		
-		if(current_test_result == MUTEST_SUCCESS)
+		current_test_result = mutest_run_single_test(group->test_array[i]);
+
+		if (current_test_result == MUTEST_SUCCESS)
 		{
 			success_count++;
 		}
-		
-		error_count |= current_test_result;
+
+		errors |= current_test_result;
 	}
-	printf("grouped test %li/%li success \n", success_count, length);
-	return error_count;
+
+	printf("test %li/%li success \n", success_count, group->count);
+	return errors;
 }
+
+int
+mutest_run()
+{
+	size_t current_test_result = 0;
+	size_t success_count = 0;
+	int errors = MUTEST_SUCCESS;
+	size_t i = 0;
+
+	for (; i < current_group_count; i++)
+	{
+		current_test_result = mutest_run_group(group_array_test[i]);
+
+		if (current_test_result == MUTEST_SUCCESS)
+		{
+			success_count++;
+		}
+
+		errors |= current_test_result;
+	}
+	printf("grouped %li/%li success \n", success_count, current_group_count);
+	return errors;
+}
+
+/* call order:
+ * -> mutest_run():
+ * 		-> mutest_run_group():
+ * 			-> mutest_run_single_test():
+ * 				-> run_threaded_test():
+ * 					-> run mutest_test.func()
+ *
+ */
