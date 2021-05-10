@@ -34,11 +34,15 @@ int imp_mutest_run_grouped_test(struct mutest_test *test, size_t length,
 		return MUTEST_ERROR;                                                   \
 	}
 
+
 #define mutest_string_equal(str1, str2)                                        \
 	if ((strcmp(str1, str2) != 0))                                             \
 	{                                                                          \
 		printf("expected %s == %-10s | ", str1, str2);                         \
 		return MUTEST_ERROR;                                                   \
 	}
+
+#define mutest_expect_null(value) mutest_expect(value == NULL)
+#define mutest_expect_not_null(value) mutest_expect(value != NULL)
 
 #endif /* _MULIB_MUTEST_H */
