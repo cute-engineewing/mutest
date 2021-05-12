@@ -114,6 +114,78 @@ mutest_run()
 	return errors;
 }
 
+const char* print_error(const struct mutest_location location)
+{
+	printf("(file: %s / line: %i) | ", location.file, location.line);
+	return "";
+}
+
+void _muexpect(bool condition, struct mutest_location location)
+{
+	if(!condition)
+	{
+		printf("error, expected condition to be true");
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+void _muexpect_false(bool condition, struct mutest_location location)
+{
+	if(condition)
+	{
+		printf("error, expected condition to be false");
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+void _muexpect_with_info(bool condition, const char* info, struct mutest_location location)
+{
+	if(!condition)
+	{
+		printf("error (in: %s) expected condition to be true", info);
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+void _muexpect_strings_equal(const char* str1, const char* str2, struct mutest_location location)
+{
+	if(strcmp(str1,str2) != 0)
+	{
+		printf("error expected '%s' and '%s' equal", str1, str2);
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+
+void _muexpect_equal(long v1, long v2, struct mutest_location location)
+{
+	if(v1 != v2)
+	{
+		printf("error expected '%li' and '%li' equal", v1, v2);
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+
+void _muexpect_null(void* pointer, struct mutest_location location)
+{
+	if(pointer != NULL)
+	{
+		printf("error expected pointer to be null");
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
+
+void _muexpect_not_null(void* pointer, struct mutest_location location)
+{
+	if(pointer == NULL)
+	{
+		printf("error expected pointer to not be null");
+		print_error(location);
+		exit(MUTEST_ERROR);
+	}
+}
 /* call order:
  * -> mutest_run():
  * 		-> mutest_run_group():

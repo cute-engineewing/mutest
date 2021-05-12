@@ -1,39 +1,39 @@
 #include "mutest.h"
 #include <stdbool.h>
-mutest_group(test_expect)
+MUTEST_GROUP(test_expect)
 
-	mutest_test(expect_positive_result)
+MUTEST_TEST(expect_positive_result)
 {
-	mutest_expect(true);
+	muexpect(true);
 	return MUTEST_SUCCESS;
 }
 
-mutest_test_with_specific_result(expect_negative_result, MUTEST_ERROR)
+MUTEST_TEST_WITH_SPECIFIC_RESULT(expect_negative_result, MUTEST_ERROR)
 {
-	mutest_expect(false);
+	muexpect(false);
 	return MUTEST_SUCCESS;
 }
 
-mutest_test(string_equal_positive_result)
+MUTEST_TEST(string_equal_positive_result)
 {
-	mutest_string_equal("hello", "hello");
+	muexpect_string_equals("hello", "hello");
 	return MUTEST_SUCCESS;
 }
 
-mutest_test_with_specific_result(string_equal_negative_result, MUTEST_ERROR)
+MUTEST_TEST_WITH_SPECIFIC_RESULT(string_equal_negative_result, MUTEST_ERROR)
 {
-	mutest_string_equal("uwuwu", "owo");
+	muexpect_string_equals("uwuwu", "owo");
 	return MUTEST_SUCCESS;
 }
 
-mutest_test(expect_null_positive_result)
+MUTEST_TEST(expect_null_positive_result)
 {
-	mutest_expect_null(NULL);
+	muexpect_null(NULL);
 	return MUTEST_SUCCESS;
 }
 
-mutest_test_with_specific_result(expect_null_negative_result, MUTEST_ERROR)
+MUTEST_TEST_WITH_SPECIFIC_RESULT(expect_null_negative_result, MUTEST_ERROR)
 {
-	mutest_expect_null(((void*)(10)));
+	muexpect_null(((void*)(10)));
 	return MUTEST_SUCCESS;
 }
