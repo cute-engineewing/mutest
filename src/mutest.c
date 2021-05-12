@@ -8,7 +8,7 @@ struct mutest_group_test *group_array_test[MAX_GROUP];
 size_t current_group_count = 0;
 
 void
-_add_group(struct mutest_group_test *target)
+mutest_add_group(struct mutest_group_test *target)
 {
 	target->test_array = malloc(sizeof(struct mutest_test) * MAX_TEST_ON_GROUP);
 	group_array_test[current_group_count] = target;
@@ -16,7 +16,7 @@ _add_group(struct mutest_group_test *target)
 }
 
 void
-_add_test(struct mutest_group_test *group, struct mutest_test test)
+mutest_add_test(struct mutest_group_test *group, struct mutest_test test)
 {
 	group->test_array[group->count] = test;
 	group->count++;

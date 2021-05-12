@@ -46,16 +46,16 @@ void mutest_add_test(struct mutest_group_test *group, struct mutest_test test);
                                                                                \
 	__attribute__((constructor)) static void group_name##group_wrapper(void)   \
 	{                                                                          \
-		_add_group(&group);                                                    \
+		mutest_add_group(&__mutest_group__);                                                    \
 	}
 
 /* add a test on a group */
 #define MUTEST_TEST(test)                                                      \
-	mutest_result_t test##func();                                                          \
+	mutest_result_t test##func();												\
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group,                                                      \
+		mutest_add_test(&__mutest_group__,                                                      \
 				  (struct mutest_test){ test##func, #test, MUTEST_SUCCESS });  \
 	}                                                                          \
                                                                                \
@@ -67,7 +67,7 @@ void mutest_add_test(struct mutest_group_test *group, struct mutest_test test);
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group,                                                      \
+		mutest_add_test(&__mutest_group__,                                                      \
 				  (struct mutest_test){ test##func, #test, expected_result }); \
 	}                                                                          \
                                                                                \
