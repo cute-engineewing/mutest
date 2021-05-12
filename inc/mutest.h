@@ -42,33 +42,35 @@ void mutest_add_test(struct mutest_group_test *group, struct mutest_test test);
 /* only 1 group per file, used to group test, for exemple test on string, or
  * test on vector */
 #define MUTEST_GROUP(group_name)                                               \
-	static struct mutest_group_test __mutest_group__ = { #group_name, 0, 0 };             \
+	static struct mutest_group_test __mutest_group__ = { #group_name, 0, 0 };  \
                                                                                \
 	__attribute__((constructor)) static void group_name##group_wrapper(void)   \
 	{                                                                          \
-		mutest_add_group(&__mutest_group__);                                                    \
+		mutest_add_group(&__mutest_group__);                                   \
 	}
 
 /* add a test on a group */
 #define MUTEST_TEST(test)                                                      \
-	mutest_result_t test##func();												\
+	mutest_result_t test##func();                                              \
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		mutest_add_test(&__mutest_group__,                                                      \
-				  (struct mutest_test){ test##func, #test, MUTEST_SUCCESS });  \
+		mutest_add_test(                                                       \
+			&__mutest_group__,                                                 \
+			(struct mutest_test){ test##func, #test, MUTEST_SUCCESS });        \
 	}                                                                          \
                                                                                \
 	mutest_result_t test##func()
 
 /* like a mutest_test but with a wrapper around for checking the result */
 #define MUTEST_TEST_WITH_SPECIFIC_RESULT(test, expected_result)                \
-	mutest_result_t test##func();                                                          \
+	mutest_result_t test##func();                                              \
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		mutest_add_test(&__mutest_group__,                                                      \
-				  (struct mutest_test){ test##func, #test, expected_result }); \
+		mutest_add_test(                                                       \
+			&__mutest_group__,                                                 \
+			(struct mutest_test){ test##func, #test, expected_result });       \
 	}                                                                          \
                                                                                \
 	mutest_result_t test##func()

@@ -14,14 +14,14 @@ little sample:
 ```c
 #include "mutest.h"
 
-mutest_group(buffer_test)
+MUTEST_GROUP(buffer_test)
 
-mutest_test(buffer_creation)
+MUTEST_TEST(buffer_creation)
 {
     struct buffer buff = create_buffer(10);
 
-    mutest_expect(buff.size == 10);
-    mutest_expect_not_null(buff.data);
+    muexpect(buff.size == 10);
+    muexpect_not_null(buff.data);
 
 	return MUTEST_SUCCESS;
 }
@@ -33,8 +33,8 @@ mutest_test(buffer_deletion)
 
     delete_buffer(&buff);
 
-    mutest_expect(buff.size == 0);
-    mutest_expect_null(buff.data);
+    muexpect(buff.size == 0);
+    muexpect_null(buff.data);
 
 	return MUTEST_SUCCESS;
 }
