@@ -35,23 +35,23 @@ run_threaded_test(struct mutest_test test)
 	{
 		exit(test.func());
 	}
-	waitpid(child, &status, 0);
+	waitpid(-1, &status, 0);
 
-	return status;
+	return WEXITSTATUS(status);
 }
 
 int
 mutest_run_single_test(struct mutest_test test)
 {
-	int result;
+	int result = 0;
 	printf("test: %-30s | ", test.name);
 
 	result = run_threaded_test(test);
 
-	if (result != MUTEST_SUCCESS) /* we want a success */
+	if (result != test.expected_result) /* we want a success */
 	{
 		printf("\033[0;31m"); /* set red color */
-		printf("error %i\n", result);
+		printf("error %i (expected: %i) \n", result, test.expected_result);
 		printf("\033[0m"); /* reset */
 		return MUTEST_ERROR;
 	}

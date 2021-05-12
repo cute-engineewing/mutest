@@ -13,6 +13,7 @@ struct mutest_test
 {
 	mutest_func_t func;
 	const char *name;
+	int expected_result;
 };
 
 struct mutest_group_test
@@ -51,7 +52,7 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group, (struct mutest_test){ test##func, #test });          \
+		_add_test(&group, (struct mutest_test){ test##func, #test, MUTEST_SUCCESS});          \
 	}                                                                          \
                                                                                \
 	int test##func()
@@ -59,32 +60,14 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 /* like a mutest_test but with a wrapper around for checking the result */
 #define MUTEST_TEST_WITH_SPECIFIC_RESULT(test, expected_result)                \
 	int test##func();                                                          \
-	int test##wrapper_check(void)                                              \
-	{                                                                          \
-		int result = test##func();                                             \
-		if (result != expected_result)                                         \
-		{                                                                      \
-			printf("error expected test with result: %i but got %i \n",           \
-				   expected_result, result);                                   \
-			return MUTEST_ERROR;                                               \
-		}                                                                      \
-		return MUTEST_SUCCESS;                                                 \
-	}                                                                          \
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group, (struct mutest_test){ test##wrapper_check, #test });          \
+		_add_test(&group, (struct mutest_test){ test##func, #test, expected_result});          \
 	}                                                                          \
                                                                                \
 	int test##func()
 
-/* error if (condition) == false */
-#define mutest_expect(condition)                                               \
-	if (!(condition))                                                          \
-	{                                                                          \
-		printf("expected %-10s | ", #condition);                               \
-		return MUTEST_ERROR;                                                   \
-	}
 
 void _muexpect(bool condition, struct mutest_location location);
 
