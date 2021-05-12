@@ -35,6 +35,8 @@ test: $(TARGET).a $(TEST_OBJS)
 
 clean:
 	$(RM) $(OBJS)
+	$(RM) $(OBJS:.o=.gcda)
+	$(RM) $(OBJS:.o=.gcno)
 	$(RM) $(TEST_OBJS:.o=.gcda)
 	$(RM) $(TEST_OBJS:.o=.gcno)
 	$(RM) $(TEST_OBJS)
