@@ -1,9 +1,9 @@
 #ifndef _MULIB_MUTEST_H
 #define _MULIB_MUTEST_H
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #define MAX_TEST_ON_GROUP 128
 #define MAX_GROUP		  256
@@ -26,10 +26,11 @@ struct mutest_group_test
 struct mutest_location
 {
 	int line;
-	const char* file;
+	const char *file;
 };
 
-#define MUTEST_CURRENT_LOCATION (struct mutest_location){ __LINE__, __FILE__}
+#define MUTEST_CURRENT_LOCATION                                                \
+	(struct mutest_location) { __LINE__, __FILE__ }
 #define MUTEST_SUCCESS 0
 #define MUTEST_ERROR   1
 
@@ -52,7 +53,8 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group, (struct mutest_test){ test##func, #test, MUTEST_SUCCESS});          \
+		_add_test(&group,                                                      \
+				  (struct mutest_test){ test##func, #test, MUTEST_SUCCESS });  \
 	}                                                                          \
                                                                                \
 	int test##func()
@@ -63,45 +65,45 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
-		_add_test(&group, (struct mutest_test){ test##func, #test, expected_result});          \
+		_add_test(&group,                                                      \
+				  (struct mutest_test){ test##func, #test, expected_result }); \
 	}                                                                          \
                                                                                \
 	int test##func()
-
 
 void _muexpect(bool condition, struct mutest_location location);
 
 void _muexpect_false(bool condition, struct mutest_location location);
 
-void _muexpect_with_info(bool condition, const char* info, struct mutest_location location);
+void _muexpect_with_info(bool condition, const char *info,
+						 struct mutest_location location);
 
-void _muexpect_strings_equal(const char* str1, const char* str2, struct mutest_location location);
+void _muexpect_strings_equal(const char *str1, const char *str2,
+							 struct mutest_location location);
 
 void _muexpect_equal(long v1, long v2, struct mutest_location location);
 
-void _muexpect_null(void* pointer, struct mutest_location location);
+void _muexpect_null(void *pointer, struct mutest_location location);
 
-void _muexpect_not_null(void* pointer, struct mutest_location location);
+void _muexpect_not_null(void *pointer, struct mutest_location location);
 
-#define muexpect(condition) \
-   	_muexpect(condition, MUTEST_CURRENT_LOCATION)
+#define muexpect(condition) _muexpect(condition, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_false(condition) \
-   	_muexpect_false(condition, MUTEST_CURRENT_LOCATION)
+#define muexpect_false(condition)                                              \
+	_muexpect_false(condition, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_with_info(condition, info) \
-   	_muexpect_with_info(condition, info, MUTEST_CURRENT_LOCATION)
+#define muexpect_with_info(condition, info)                                    \
+	_muexpect_with_info(condition, info, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_string_equals(str1, str2) \
-   	_muexpect_strings_equal(str1, str2, MUTEST_CURRENT_LOCATION)
+#define muexpect_string_equals(str1, str2)                                     \
+	_muexpect_strings_equal(str1, str2, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_equal(i1, i2) \
+#define muexpect_equal(i1, i2)                                                 \
 	_muexpect_string_equals(i1, i2, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_null(pointer) \
-	_muexpect_null(pointer, MUTEST_CURRENT_LOCATION)
+#define muexpect_null(pointer) _muexpect_null(pointer, MUTEST_CURRENT_LOCATION)
 
-#define muexpect_not_null(pointer) \
+#define muexpect_not_null(pointer)                                             \
 	_muexpect_not_null(pointer, MUTEST_CURRENT_LOCATION)
 
 /* run all test */
