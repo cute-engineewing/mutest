@@ -34,6 +34,6 @@ MUTEST_TEST(expect_null_positive_result)
 
 MUTEST_TEST_WITH_SPECIFIC_RESULT(expect_null_negative_result, MUTEST_ERROR)
 {
-	muexpect_null(((void*)(10)));
+	muexpect_null(((void *)(10)));
 	return MUTEST_SUCCESS;
 }

@@ -24,7 +24,7 @@ _add_test(struct mutest_group_test *group, struct mutest_test test)
 }
 
 /* launch a thread a get its result */
-int
+mutest_result_t
 run_threaded_test(struct mutest_test test)
 {
 	pid_t child;
@@ -40,10 +40,10 @@ run_threaded_test(struct mutest_test test)
 	return WEXITSTATUS(status);
 }
 
-int
+mutest_result_t
 mutest_run_single_test(struct mutest_test test)
 {
-	int result = 0;
+	mutest_result_t result = 0;
 	printf("test: %-30s | ", test.name);
 
 	result = run_threaded_test(test);
@@ -65,11 +65,11 @@ mutest_run_single_test(struct mutest_test test)
 	}
 }
 
-int
+mutest_result_t
 mutest_run_group(struct mutest_group_test *group)
 {
-	int errors = MUTEST_SUCCESS;
-	size_t current_test_result = 0;
+	mutest_result_t errors = MUTEST_SUCCESS;
+	mutest_result_t current_test_result = 0;
 	size_t success_count = 0;
 	size_t i = 0;
 	printf("=====================\n");
@@ -91,12 +91,12 @@ mutest_run_group(struct mutest_group_test *group)
 	return errors;
 }
 
-int
+mutest_result_t
 mutest_run()
 {
-	size_t current_test_result = 0;
+	mutest_result_t current_test_result = 0;
 	size_t success_count = 0;
-	int errors = MUTEST_SUCCESS;
+	mutest_result_t errors = MUTEST_SUCCESS;
 	size_t i = 0;
 
 	for (; i < current_group_count; i++)
@@ -115,11 +115,12 @@ mutest_run()
 }
 
 void
-quit_test(int status)
+quit_test(mutest_result_t status)
 {
 	fflush(stdout);
 	exit(status);
 }
+
 const char *
 print_error(const struct mutest_location location)
 {
@@ -137,6 +138,7 @@ _muexpect(bool condition, struct mutest_location location)
 		quit_test(MUTEST_ERROR);
 	}
 }
+
 void
 _muexpect_false(bool condition, struct mutest_location location)
 {
@@ -147,6 +149,7 @@ _muexpect_false(bool condition, struct mutest_location location)
 		quit_test(MUTEST_ERROR);
 	}
 }
+
 void
 _muexpect_with_info(bool condition, const char *info,
 					struct mutest_location location)
@@ -158,6 +161,7 @@ _muexpect_with_info(bool condition, const char *info,
 		quit_test(MUTEST_ERROR);
 	}
 }
+
 void
 _muexpect_strings_equal(const char *str1, const char *str2,
 						struct mutest_location location)

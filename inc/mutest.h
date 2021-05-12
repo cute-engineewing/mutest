@@ -8,12 +8,13 @@
 #define MAX_TEST_ON_GROUP 128
 #define MAX_GROUP		  256
 
-typedef int (*mutest_func_t)();
+typedef int mutest_result_t;
+typedef mutest_result_t (*mutest_func_t)();
 struct mutest_test
 {
 	mutest_func_t func;
 	const char *name;
-	int expected_result;
+	mutest_result_t expected_result;
 };
 
 struct mutest_group_test
@@ -31,16 +32,17 @@ struct mutest_location
 
 #define MUTEST_CURRENT_LOCATION                                                \
 	(struct mutest_location) { __LINE__, __FILE__ }
+
 #define MUTEST_SUCCESS 0
 #define MUTEST_ERROR   1
 
-void _add_group(struct mutest_group_test *target);
-void _add_test(struct mutest_group_test *group, struct mutest_test test);
+void mutest_add_group(struct mutest_group_test *target);
+void mutest_add_test(struct mutest_group_test *group, struct mutest_test test);
 
 /* only 1 group per file, used to group test, for exemple test on string, or
  * test on vector */
 #define MUTEST_GROUP(group_name)                                               \
-	static struct mutest_group_test group = { #group_name, 0, 0 };             \
+	static struct mutest_group_test __mutest_group__ = { #group_name, 0, 0 };             \
                                                                                \
 	__attribute__((constructor)) static void group_name##group_wrapper(void)   \
 	{                                                                          \
@@ -49,7 +51,7 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 
 /* add a test on a group */
 #define MUTEST_TEST(test)                                                      \
-	int test##func();                                                          \
+	mutest_result_t test##func();                                                          \
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
@@ -57,11 +59,11 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 				  (struct mutest_test){ test##func, #test, MUTEST_SUCCESS });  \
 	}                                                                          \
                                                                                \
-	int test##func()
+	mutest_result_t test##func()
 
 /* like a mutest_test but with a wrapper around for checking the result */
 #define MUTEST_TEST_WITH_SPECIFIC_RESULT(test, expected_result)                \
-	int test##func();                                                          \
+	mutest_result_t test##func();                                                          \
 	/* test wrapper is the function that will add the test to the list */      \
 	__attribute__((constructor)) static void test##func_wrapper(void)          \
 	{                                                                          \
@@ -69,7 +71,7 @@ void _add_test(struct mutest_group_test *group, struct mutest_test test);
 				  (struct mutest_test){ test##func, #test, expected_result }); \
 	}                                                                          \
                                                                                \
-	int test##func()
+	mutest_result_t test##func()
 
 void _muexpect(bool condition, struct mutest_location location);
 
@@ -107,6 +109,6 @@ void _muexpect_not_null(void *pointer, struct mutest_location location);
 	_muexpect_not_null(pointer, MUTEST_CURRENT_LOCATION)
 
 /* run all test */
-int mutest_run();
+mutest_result_t mutest_run();
 
 #endif /* _MULIB_MUTEST_H */
